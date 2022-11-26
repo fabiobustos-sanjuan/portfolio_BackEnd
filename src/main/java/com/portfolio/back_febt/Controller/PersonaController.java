@@ -19,15 +19,64 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/personas")
+/*@RequestMapping("/personas")*/
 //@RequestMapping("/personas")
 //@CrossOrigin(origins = "http://localhost:4200")
 @CrossOrigin(origins = "https://frontendfebt.web.app")
 public class PersonaController {
-    @Autowired
-    ImpPersonaService personaService;
+    /*@Autowired ImpPersonaService personaService;*/
     
-    @GetMapping("/lista")
+@Autowired IPersonaService ipersonaService;
+    
+    @GetMapping("personas/traer")
+    public List<Persona> getPersona() {
+        return ipersonaService.getPersona();
+    }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/personas/crear")
+    public String createPersona(@RequestBody Persona persona) {
+        ipersonaService.savePersona(persona);
+        return "La persona fue creada correctamente";
+    }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/personas/borrar/{id}")
+    public String deletePersona(@PathVariable Long id){
+        ipersonaService.deletePersona(id);
+        return "La persona fue eliminada correctamente";
+    }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/personas/editar/{id}")
+    public Persona editPersona(@PathVariable Long id,
+                                @RequestParam("nombre") String nuevoNombre,
+                                @RequestParam("apellido") String nuevoApellido,
+                                @RequestParam("email") String nuevoEmail,
+                                @RequestParam("dir") String nuevaDir,
+                                @RequestParam("prof") String nuevaProf,
+                                @RequestParam("imgs") String nuevaImgs,
+                                @RequestParam("imgl") String nuevaImgl,
+                                @RequestParam("about") String nuevaAbout){
+        Persona persona = ipersonaService.findPersona(id);
+        
+        persona.setNombre(nuevoNombre);
+        persona.setApellido(nuevoApellido);
+        persona.setEmail(nuevoEmail);
+        persona.setDireccion(nuevaDir);
+        persona.setProfesion(nuevaProf);
+        persona.setImgs(nuevaImgs);
+        persona.setImgl(nuevaImgl);
+        persona.setAbout(nuevaAbout);
+        
+        ipersonaService.savePersona(persona);
+        return persona;
+    }
+    
+    @GetMapping("/personas/traer/perfil")
+    public Persona findPersona(){
+        return ipersonaService.findPersona((long)1);
+    }    /* @GetMapping("/lista")
     public ResponseEntity<List<Persona>> list(){
         List<Persona> list = personaService.list();
         return new ResponseEntity(list, HttpStatus.OK);
@@ -41,7 +90,7 @@ public class PersonaController {
         return new ResponseEntity(persona, HttpStatus.OK);
     } */
     
-    public ResponseEntity<Persona> getById(@PathVariable("id") int id){
+    /*public ResponseEntity<Persona> getById(@PathVariable("id") int id){
         if(!personaService.existsById(id)){
             return new ResponseEntity(new Mensaje("No existe el ID"), HttpStatus.BAD_REQUEST);
         }
@@ -70,7 +119,7 @@ public class PersonaController {
         personaService.save(educacion);
         return new ResponseEntity(new Mensaje("Educación agregada"), HttpStatus.OK);
     }*/
-    @PostMapping("/crear")
+    /*@PostMapping("/crear")
     public String createPersona(@RequestBody Persona persona){        
         personaService.save(persona);
         return "La persona fue creada de forma correcta";
@@ -90,7 +139,7 @@ public class PersonaController {
     }*/
     
     
-    @PutMapping("/update/{id}")
+    /*@PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody dtoPersona dtopersona){
         if(!personaService.existsById(id)){
             return new ResponseEntity(new Mensaje("El ID no existe"), HttpStatus.BAD_REQUEST);
