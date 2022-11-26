@@ -70,12 +70,12 @@ public class PersonaController {
         personaService.save(educacion);
         return new ResponseEntity(new Mensaje("Educación agregada"), HttpStatus.OK);
     }*/
-    /*@PostMapping("/crear")
+    @PostMapping("/crear")
     public String createPersona(@RequestBody Persona persona){        
         personaService.save(persona);
         return "La persona fue creada de forma correcta";
-    }*/
-    @PostMapping("/create")
+    }
+    /*@PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody dtoPersona dtopersona){
         if(StringUtils.isBlank(dtopersona.getNombre()))
             return new ResponseEntity(new Mensaje("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
@@ -87,7 +87,7 @@ public class PersonaController {
                 dtopersona.getAbout());
         personaService.save(persona);
         return new ResponseEntity(new Mensaje("Persona ya agregada"), HttpStatus.OK);
-    }
+    }*/
     
     
     @PutMapping("/update/{id}")
